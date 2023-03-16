@@ -1,0 +1,19 @@
+.card-list {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  background-color: rgb(201, 200, 200);
+  padding: 10px;
+  margin: 0 -10px;
+  width: 100%;
+}
+
+@media only screen and (max-width: 1072px) {
+  .card-list {
+    grid-template-columns: auto auto;
+  }
+  @media only screen and (max-width: 500px) {
+    .card-list {
+      grid-template-columns: auto;
+    }
+  }
+}

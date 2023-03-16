@@ -1,1 +1,17 @@
-<p>card works!</p>
+<div class="card">
+  <h3>{{ card.name }}</h3>
+  <div #AllTasks>
+    <div *ngFor="let task of card?.tasks">
+      <app-task
+        (selectionChange)="onTaskSelectionChange($event)"
+        [task]="task"
+        (selectedTask)="deleteOneTask($event)"
+      ></app-task>
+    </div>
+  </div>
+  <div *ngIf="selectedTasks.length > 0">
+    <button (click)="deleteSelectedTasks()">Delete Selected</button>
+    <button (click)="deleteAllTasks()">Delete All</button>
+    <button (click)="unSelectAll()">UnSelect All</button>
+  </div>
+</div>
