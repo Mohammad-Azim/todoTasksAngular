@@ -15,3 +15,9 @@
 .card p {
   margin: 0;
 }
+.flex {
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  padding: 10px;
+}

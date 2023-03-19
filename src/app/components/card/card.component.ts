@@ -9,8 +9,12 @@ import { TasksService } from 'src/app/services/tasks/tasks.service';
   styleUrls: ['./card.component.css'],
 })
 export class CardComponent implements OnInit {
-  @Input() card!: Card;
   selectedTasks: Task[] = [];
+  ToggleTaskFrom: boolean = false;
+  important: boolean = false;
+  description?: string;
+
+  @Input() card!: Card;
   @ViewChild('AllTasks') allTasks!: ElementRef;
 
   constructor(private tasksService: TasksService) {}
@@ -34,6 +38,7 @@ export class CardComponent implements OnInit {
   }
 
   deleteSelectedTasks() {
+    this.tasksService.deleteTasks(this.card.id, this.selectedTasks);
     this.selectedTasks.forEach((selectedTask) => {
       const index = this.card.tasks.indexOf(selectedTask);
       if (index !== -1) {
@@ -56,5 +61,22 @@ export class CardComponent implements OnInit {
 
   unSelectAll() {
     window.alert('UnSelectAll Not finished');
+  }
+
+  ToggleAddTaskFrom() {
+    this.ToggleTaskFrom = !this.ToggleTaskFrom;
+  }
+
+  onSubmitTask() {
+    let newTask = this.card.tasks[this.card.tasks.length - 1];
+    console.log(newTask);
+    newTask.id = newTask.id + 1;
+
+    newTask.description = this.description!;
+    newTask.important = this.important;
+
+    this.tasksService.addTask(this.card.id, newTask);
+    this.card.tasks.push(newTask);
+    this.ToggleTaskFrom = false;
   }
 }
