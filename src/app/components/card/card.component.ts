@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Card } from 'src/app/Models/card';
 import { Task } from 'src/app/Models/task';
+import { TaskSelected } from 'src/app/Models/taskSelected';
 import { TasksService } from 'src/app/services/tasks/tasks.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { TasksService } from 'src/app/services/tasks/tasks.service';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
 })
-export class CardComponent implements OnInit {
+export class CardComponent {
   selectedTasks: Task[] = [];
   ToggleTaskFrom: boolean = false;
   important: boolean = false;
@@ -18,62 +19,86 @@ export class CardComponent implements OnInit {
   @ViewChild('AllTasks') allTasks!: ElementRef;
 
   constructor(private tasksService: TasksService) {}
-  ngOnInit(): void {}
 
-  onTaskSelectionChange(taskVal: any) {
+  /**
+   *
+   * @param taskVal this variable will contain id and is Selected boolean value
+   *
+   * getting the task data by the id from @param taskVal
+   *
+   * if the isSelected true will add the task to the selected Tasks
+   * else that mean the task in the selected tasks and should be removed
+   */
+  onTaskSelectionChange(taskVal: TaskSelected) {
     let indTask = this.card.tasks.find((task) => task.id == taskVal.id);
-    if (indTask != undefined) {
-      if (taskVal.isSelected == true) {
-        if (indTask && !this.selectedTasks.includes(indTask)) {
-          this.selectedTasks.push(indTask);
-        }
-      } else {
-        var index = this.selectedTasks.indexOf(indTask);
-        if (index !== -1) {
-          this.selectedTasks.splice(index, 1);
-        }
+    if (taskVal.isSelected == true) {
+      if (indTask && !this.selectedTasks.includes(indTask)) {
+        this.selectedTasks.push(indTask);
       }
+    } else {
+      var index = this.selectedTasks.indexOf(indTask!);
+      this.selectedTasks.splice(index, 1);
     }
-    console.log(this.selectedTasks); //#??#
   }
 
+  /**
+   * on click will remove all tasks in selectedTasks array ( all selected tasks)
+   */
   deleteSelectedTasks() {
-    this.tasksService.deleteTasks(this.card.id, this.selectedTasks);
+    let ids: number[] = this.selectedTasks.map((task) => task.id);
+    this.tasksService.deleteTasks(this.card.id, ids);
     this.selectedTasks.forEach((selectedTask) => {
       const index = this.card.tasks.indexOf(selectedTask);
-      if (index !== -1) {
-        this.card.tasks.splice(index, 1);
-      }
+      this.card.tasks.splice(index, 1);
     });
     this.selectedTasks = [];
   }
 
+  /**
+   * on click will delete all Tasks by for current Card
+   */
   deleteAllTasks() {
+    this.tasksService.deleteAllTasks(this.card.id);
     this.card.tasks = [];
     this.selectedTasks = [];
   }
 
-  deleteOneTask(selectedTask: Task) {
-    const index = this.card.tasks.indexOf(selectedTask);
-    this.card.tasks.splice(index, 1);
-    this.tasksService.deleteTask(this.card.id, selectedTask.id);
+  /**
+   *
+   * @param taskId task id that you wanna to delete
+   *
+   * update this.card.tasks (remove task form the current card updating the ui)
+   * then call tasksService.deleteTask() to remove task from the local storage
+   */
+  deleteOneTask(taskId: number) {
+    this.card.tasks = this.card.tasks.filter(
+      (task: Task) => task.id !== taskId
+    );
+    this.tasksService.deleteTask(this.card.id, taskId);
   }
 
-  unSelectAll() {
-    window.alert('UnSelectAll Not finished');
-  }
-
+  /**
+   * Toggle the form giving the ability to add new task to form
+   */
   ToggleAddTaskFrom() {
     this.ToggleTaskFrom = !this.ToggleTaskFrom;
   }
 
+  /**
+   * on Adding new task will add task to the current card
+   * then update the ui
+   *
+   * call tasksService.addTask() to add task to the localStorage
+   */
   onSubmitTask() {
-    let newTask = this.card.tasks[this.card.tasks.length - 1];
-    console.log(newTask);
-    newTask.id = newTask.id + 1;
+    let lastId = this.card.tasks[this.card.tasks.length - 1].id;
+    let newTaskId = lastId + 1;
 
-    newTask.description = this.description!;
-    newTask.important = this.important;
+    let newTask = new Task({
+      id: newTaskId,
+      description: this.description,
+      important: this.important,
+    });
 
     this.tasksService.addTask(this.card.id, newTask);
     this.card.tasks.push(newTask);

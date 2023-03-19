@@ -18,22 +18,41 @@ export class TaskComponent {
     id: number;
     isSelected: boolean;
   }>();
-  @Output() selectedTask = new EventEmitter<Task>();
+  @Output() selectedTask = new EventEmitter<number>();
 
   constructor(private tasksService: TasksService) {}
 
   isSelected: boolean = false;
 
+  /**
+   * will called when ever task check box change it's state
+   * and emit the changes to the parent component (Card component)
+   * @param id the id for Task
+   * @param isSelected if the task selected or not boolean
+   */
   onSelectionChange(id: number, isSelected: boolean = this.isSelected) {
     this.selectionChange.emit({ id, isSelected });
   }
 
+  /**
+   * will emit the parent that the delete button was
+   * pressed and send the id for the task wanna to delete
+   */
   onPressDelete() {
-    this.selectedTask.emit(this.task);
+    this.selectedTask.emit(this.task!.id);
   }
+
+  /**
+   * toggle to show or hide the update task form
+   */
   ShowUpdateForm() {
     this.toggleUpdateForm = !this.toggleUpdateForm;
   }
+
+  /**
+   * will be called when ever the update task form is submitted
+   * @param task the task to update
+   */
   onSubmit() {
     let updatedTask = this.task;
     updatedTask!.description = this.description!;

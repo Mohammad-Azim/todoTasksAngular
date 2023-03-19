@@ -1,70 +1,86 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Task } from 'src/app/Models/task';
 import { Card } from 'src/app/Models/card';
-import { JSON_DATA_PATH } from 'src/app/globals';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasksService {
   constructor(private http: HttpClient) {}
-  createTask(cardId: number, task: Task): Observable<Card> {
-    const url = `${JSON_DATA_PATH}/${cardId}/tasks`;
-    return this.http.post<Card>(url, task);
-  }
+  data = JSON.parse(localStorage.getItem('MyJson')!);
 
-  deleteTasks(cardId: number, tasks: Task[]): void {
-    let data = JSON.parse(localStorage.getItem('MyJson')!);
-    const cardIndex = data.findIndex((card: any) => card.id === cardId);
-
-    tasks.forEach((taskF) => {
-      const taskIndex = data[cardIndex].tasks.findIndex(
-        (task: any) => task.id === taskF.id
+  /**
+   * delete multiple tasks at once from one card
+   * @param cardId card id that contain the tasks you wanna delete
+   * @param tasksIds array of the tasks id's you wanna delete
+   */
+  deleteTasks(cardId: number, tasksIds: number[]): void {
+    const cardIndex = this.data.findIndex((card: Card) => card.id === cardId);
+    tasksIds.forEach((taskId) => {
+      const taskIndex = this.data[cardIndex].tasks.findIndex(
+        (task: Task) => task.id === taskId
       );
-      if (cardIndex !== -1 && taskIndex !== -1) {
-        data[cardIndex].tasks.splice(taskIndex, 1);
-        localStorage.setItem('MyJson', JSON.stringify(data));
-      }
+      this.data[cardIndex].tasks.splice(taskIndex, 1);
+      this.saveChanges();
     });
   }
 
+  /**
+   * remove all tasks from card by card id
+   * @param cardId
+   */
+  deleteAllTasks(cardId: number) {
+    const cardIndex = this.data.findIndex((card: Card) => card.id === cardId);
+    this.data[cardIndex].tasks = [];
+    this.saveChanges();
+  }
+
+  /**
+   * delete one task from card by card id and task id
+   * @param cardId
+   * @param taskId
+   */
   deleteTask(cardId: number, taskId: number): void {
-    let data = JSON.parse(localStorage.getItem('MyJson')!);
-
-    const cardIndex = data.findIndex((card: any) => card.id === cardId);
-    const taskIndex = data[cardIndex].tasks.findIndex(
-      (task: any) => task.id === taskId
+    const cardIndex = this.data.findIndex((card: Card) => card.id === cardId);
+    const taskIndex = this.data[cardIndex].tasks.findIndex(
+      (task: Task) => task.id === taskId
     );
-
-    if (cardIndex !== -1 && taskIndex !== -1) {
-      data[cardIndex].tasks.splice(taskIndex, 1);
-      localStorage.setItem('MyJson', JSON.stringify(data));
-    }
+    this.data[cardIndex].tasks.splice(taskIndex, 1);
+    this.saveChanges();
   }
 
+  /**
+   * add one task to card by it's id
+   * @param cardId
+   * @param task
+   */
   addTask(cardId: number, task: Task) {
-    let data = JSON.parse(localStorage.getItem('MyJson')!);
-    let cardIndex = data.findIndex((card: any) => card.id === cardId);
-    if (cardIndex !== -1) {
-      data[cardIndex].tasks.push(task);
-      localStorage.setItem('MyJson', JSON.stringify(data));
-    }
+    let cardIndex = this.data.findIndex((card: Card) => card.id === cardId);
+    this.data[cardIndex].tasks.push(task);
+    this.saveChanges();
   }
 
-  updateTask(cardId: number, taskU: Task) {
-    let data = JSON.parse(localStorage.getItem('MyJson')!);
-
-    const cardIndex = data.findIndex((card: any) => card.id === cardId);
-    const taskIndex = data[cardIndex].tasks.findIndex(
-      (task: any) => task.id === taskU.id
+  /**
+   * Update one Task from card by card id
+   * @param cardId
+   * @param updatedTask the task with updated value (id never updated)
+   */
+  updateTask(cardId: number, updatedTask: Task) {
+    const cardIndex = this.data.findIndex((card: Card) => card.id === cardId);
+    const taskIndex = this.data[cardIndex].tasks.findIndex(
+      (task: Task) => task.id === updatedTask.id
     );
 
-    if (cardIndex !== -1 && taskIndex !== -1) {
-      data[cardIndex].tasks[taskIndex].description = taskU.description;
-      data[cardIndex].tasks[taskIndex].important = taskU.important;
-      localStorage.setItem('MyJson', JSON.stringify(data));
-    }
+    this.data[cardIndex].tasks[taskIndex].description = updatedTask.description;
+    this.data[cardIndex].tasks[taskIndex].imp = updatedTask.important;
+    this.saveChanges();
+  }
+
+  /**
+   * save changes to the local storage
+   */
+  private saveChanges() {
+    localStorage.setItem('MyJson', JSON.stringify(this.data));
   }
 }
