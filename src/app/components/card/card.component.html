@@ -2,7 +2,7 @@
   <div class="flex">
     <h3>{{ card.name }}</h3>
     <button (click)="ToggleAddTaskFrom()">
-      <mat-icon> {{ ToggleTaskFrom ? "close" : "add" }} </mat-icon>
+      <mat-icon> {{ ToggleTaskForm ? "close" : "add" }} </mat-icon>
     </button>
   </div>
   <div #AllTasks>
@@ -20,7 +20,7 @@
     <button (click)="deleteAllTasks()">Delete All</button>
   </div>
 
-  <div *ngIf="ToggleTaskFrom">
+  <div *ngIf="ToggleTaskForm">
     <h5>Add New Task:</h5>
     <form (ngSubmit)="onSubmitTask()">
       <label for="important">Is Important</label>

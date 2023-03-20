@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
 import { Card } from 'src/app/Models/card';
 import { CardsService } from 'src/app/services/cards/cards.service';
 
@@ -9,15 +8,15 @@ import { CardsService } from 'src/app/services/cards/cards.service';
   styleUrls: ['./card-list.component.css'],
 })
 export class CardListComponent implements OnInit {
-  cards?: Card[];
+  cards: Card[] = [];
 
-  constructor(private cardsService: CardsService) {}
+  constructor(public cardsService: CardsService) {}
 
   /**
    * on init will get all card from local storage if MyJson
    * key was found else will get it form json file using cardsService
    */
-  async ngOnInit() {
+  ngOnInit() {
     if (localStorage.getItem('MyJson') == null) {
       this.cardsService.getCards().subscribe((val: Card[]) => {
         localStorage.setItem('MyJson', JSON.stringify(val));

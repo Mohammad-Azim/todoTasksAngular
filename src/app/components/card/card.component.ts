@@ -11,7 +11,7 @@ import { TasksService } from 'src/app/services/tasks/tasks.service';
 })
 export class CardComponent {
   selectedTasks: Task[] = [];
-  ToggleTaskFrom: boolean = false;
+  ToggleTaskForm: boolean = false;
   important: boolean = false;
   description?: string;
 
@@ -81,7 +81,7 @@ export class CardComponent {
    * Toggle the form giving the ability to add new task to form
    */
   ToggleAddTaskFrom() {
-    this.ToggleTaskFrom = !this.ToggleTaskFrom;
+    this.ToggleTaskForm = !this.ToggleTaskForm;
   }
 
   /**
@@ -91,6 +91,7 @@ export class CardComponent {
    * call tasksService.addTask() to add task to the localStorage
    */
   onSubmitTask() {
+    //#??# instead of make one you should pass it as prop
     let lastId = this.card.tasks[this.card.tasks.length - 1].id;
     let newTaskId = lastId + 1;
 
@@ -102,6 +103,6 @@ export class CardComponent {
 
     this.tasksService.addTask(this.card.id, newTask);
     this.card.tasks.push(newTask);
-    this.ToggleTaskFrom = false;
+    this.ToggleTaskForm = false;
   }
 }

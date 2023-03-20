@@ -7,7 +7,7 @@ import { Card } from 'src/app/Models/card';
   providedIn: 'root',
 })
 export class TasksService {
-  constructor(private http: HttpClient) {}
+  constructor() {}
   data = JSON.parse(localStorage.getItem('MyJson')!);
 
   /**
@@ -80,7 +80,7 @@ export class TasksService {
   /**
    * save changes to the local storage
    */
-  private saveChanges() {
+  saveChanges() {
     localStorage.setItem('MyJson', JSON.stringify(this.data));
   }
 }
