@@ -17,7 +17,7 @@ export class CardComponent {
 
   @Input() card!: Card;
 
-  constructor(private tasksService: TasksService) {}
+  constructor(public tasksService: TasksService) {}
 
   /**
    *
@@ -89,14 +89,14 @@ export class CardComponent {
    */
   onSubmitTask() {
     //#??# instead of make one you should pass it as prop
-    let lastId = this.card.tasks[this.card.tasks.length - 1].id;
+    let lastId = this.card.tasks[this.card.tasks.length - 1]?.id ?? 1;
     let newTaskId = lastId + 1;
 
-    let newTask = new Task({
+    let newTask: Task = {
       id: newTaskId,
       description: this.description,
       important: this.important,
-    });
+    };
 
     this.tasksService.addTask(this.card.id, newTask);
     this.card.tasks.push(newTask);
