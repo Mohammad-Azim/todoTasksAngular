@@ -10,6 +10,6 @@ export class CardsService {
   constructor(public http: HttpClient) {}
 
   getCards(): Observable<Card[]> {
-    return this.http.get<Card[]>('./../../../assets/db.json');
+    return this.http.get<Card[]>('../../../assets/db.json');
   }
 }

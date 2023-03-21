@@ -73,7 +73,7 @@ export class TasksService {
     );
 
     this.data[cardIndex].tasks[taskIndex].description = updatedTask.description;
-    this.data[cardIndex].tasks[taskIndex].imp = updatedTask.important;
+    this.data[cardIndex].tasks[taskIndex].important = updatedTask.important;
     this.saveChanges();
   }
 

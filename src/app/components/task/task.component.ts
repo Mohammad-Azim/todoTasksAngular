@@ -11,18 +11,17 @@ export class TaskComponent {
   toggleUpdateForm = false;
   important: boolean = false;
   description?: string;
+  isSelected: boolean = false;
 
-  @Input() task?: Task;
-  @Input() cardId?: number;
+  @Input() task!: Task;
+  @Input() cardId!: number;
   @Output() selectionChange = new EventEmitter<{
     id: number;
     isSelected: boolean;
   }>();
   @Output() selectedTask = new EventEmitter<number>();
 
-  constructor(private tasksService: TasksService) {}
-
-  isSelected: boolean = false;
+  constructor(public tasksService: TasksService) {}
 
   /**
    * will called when ever task check box change it's state
@@ -30,8 +29,8 @@ export class TaskComponent {
    * @param id the id for Task
    * @param isSelected if the task selected or not boolean
    */
-  onSelectionChange(id: number, isSelected: boolean = this.isSelected) {
-    this.selectionChange.emit({ id, isSelected });
+  onSelectionChange(id: number) {
+    this.selectionChange.emit({ id: id, isSelected: this.isSelected });
   }
 
   /**

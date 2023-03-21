@@ -5,7 +5,7 @@
       <mat-icon> {{ ToggleTaskForm ? "close" : "add" }} </mat-icon>
     </button>
   </div>
-  <div #AllTasks>
+  <div>
     <div *ngFor="let task of card?.tasks">
       <app-task
         (selectionChange)="onTaskSelectionChange($event)"
