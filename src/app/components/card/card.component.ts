@@ -16,7 +16,6 @@ export class CardComponent {
   description?: string;
 
   @Input() card!: Card;
-  @ViewChild('AllTasks') allTasks!: ElementRef;
 
   constructor(private tasksService: TasksService) {}
 
@@ -32,9 +31,7 @@ export class CardComponent {
   onTaskSelectionChange(taskVal: TaskSelected) {
     let indTask = this.card.tasks.find((task) => task.id == taskVal.id);
     if (taskVal.isSelected == true) {
-      if (indTask && !this.selectedTasks.includes(indTask)) {
-        this.selectedTasks.push(indTask);
-      }
+      this.selectedTasks.push(indTask!);
     } else {
       var index = this.selectedTasks.indexOf(indTask!);
       this.selectedTasks.splice(index, 1);
