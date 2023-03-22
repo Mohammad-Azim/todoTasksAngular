@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="flex">
+    <h3>{{ card.name }}</h3>
+    <button (click)="ToggleAddTaskFrom()">
+      <mat-icon> {{ ToggleTaskForm ? "close" : "add" }} </mat-icon>
+    </button>
+  </div>
+  <div>
+    <div *ngFor="let task of card?.tasks">
+      <app-task
+        (selectionChange)="onTaskSelectionChange($event)"
+        [task]="task"
+        (selectedTask)="deleteOneTask($event)"
+        [cardId]="card.id"
+      ></app-task>
+    </div>
+  </div>
+  <div *ngIf="selectedTasks.length > 0">
+    <button (click)="deleteSelectedTasks()">Delete Selected</button>
+    <button (click)="deleteAllTasks()">Delete All</button>
+  </div>
+
+  <div *ngIf="ToggleTaskForm">
+    <h5>Add New Task:</h5>
+    <form (ngSubmit)="onSubmitTask()">
+      <label for="important">Is Important</label>
+      <input
+        type="checkbox"
+        name="reminder"
+        [(ngModel)]="important"
+        id="important"
+      />
+      <br />
+      <label for="text">Description</label>
+      <input
+        type="text"
+        name="text"
+        id="text"
+        [(ngModel)]="description"
+        placeholder="Add Task Description"
+      />
+      <br />
+      <br />
+
+      <input type="submit" value="Add Task" />
+    </form>
+  </div>
+</div>

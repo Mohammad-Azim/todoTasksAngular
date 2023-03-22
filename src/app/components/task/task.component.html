@@ -1,0 +1,43 @@
+<div (dblclick)="ShowUpdateForm()" class="task">
+  <div class="flex">
+    <div>
+      <p>Is Important: {{ task.important }}</p>
+      <p>Description: {{ task.description }}</p>
+    </div>
+    <div>
+      <button (click)="onPressDelete()">
+        <mat-icon>delete_forever</mat-icon>
+      </button>
+      <input
+        type="checkbox"
+        [(ngModel)]="isSelected"
+        (change)="onSelectionChange(task!.id)"
+      />
+    </div>
+  </div>
+
+  <form *ngIf="toggleUpdateForm" (ngSubmit)="onSubmit()">
+    <br />
+    <br />
+    <label for="important">Is Important</label>
+    <input
+      type="checkbox"
+      name="reminder"
+      [(ngModel)]="important"
+      id="important"
+    />
+    <br />
+    <label for="text">Description</label>
+    <input
+      type="text"
+      name="text"
+      id="text"
+      [(ngModel)]="description"
+      placeholder="Add Task Description"
+    />
+    <br />
+    <br />
+
+    <input type="submit" value="Update Task" />
+  </form>
+</div>
