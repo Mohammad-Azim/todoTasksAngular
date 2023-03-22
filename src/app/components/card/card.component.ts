@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { last } from 'rxjs';
 import { Card } from 'src/app/Models/card';
 import { Task } from 'src/app/Models/task';
 import { TaskSelected } from 'src/app/Models/taskSelected';
@@ -90,7 +91,7 @@ export class CardComponent {
   onSubmitTask() {
     //#??# instead of make one you should pass it as prop
     let lastId = this.card.tasks[this.card.tasks.length - 1]?.id ?? 1;
-    let newTaskId = lastId + 1;
+    let newTaskId = lastId === 1 ? lastId : lastId + 1;
 
     let newTask: Task = {
       id: newTaskId,
